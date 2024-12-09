@@ -13,14 +13,19 @@ def imgBrightness(img1, c, b):
     return rst
 
 
-def image_darkaug(img,img_label,dark_aug,brightness=1):
+def image_darkaug(img,img_label,dark_aug,brightness=1,conv2d=0):
     if dark_aug==1:
         creterion = random.random()
         if creterion>0.5:
             brightness = 0
             img = imgBrightness(img,brightness,3)
             img_label = np.array([0])
-    elif dark_aug>=2:
+
+    elif dark_aug==2:
+            img = imgBrightness(img,brightness,3)
+            img_label = np.array([0])
+
+    elif dark_aug>2:
         brightness = 0.04/dark_aug
         img = imgBrightness(img,brightness,3)
         img_label = np.array([0])
@@ -66,3 +71,25 @@ def make_traj(gt_path,name):
             future_traj = np.concatenate((future_traj,current_pos),0)
     return future_traj
 
+def make_img_seq(image_path,name,image,brightness):
+    parts = name.split("/")
+    index = parts[-1][:-4]
+    past_image = image[np.newaxis,...]
+    for f in range(1,4):
+        if len(parts)==2:
+            file_name   =  f"{parts[0]}/{int(index)-2*f}.png"
+            current_image_name = os.path.join(image_path,file_name)
+            current_image  = cv2.imread(current_image_name,cv2.IMREAD_COLOR)[:,:1280,:]
+            current_image = cv2.cvtColor(current_image, cv2.COLOR_BGR2RGB)
+            current_image,_,_ = image_darkaug(current_image,np.array([1]),2,brightness)
+            current_image = current_image[np.newaxis,...]
+            past_image = np.concatenate([past_image,current_image],axis=0)
+        if len(parts)==3:
+            file_name   =  f"{parts[0]}/{parts[1]}/{int(index)-2*f}.png"
+            current_image_name = os.path.join(image_path,file_name)
+            current_image  = cv2.imread(current_image_name,cv2.IMREAD_COLOR)[:,:1280,:]
+            current_image = cv2.cvtColor(current_image, cv2.COLOR_BGR2RGB)
+            current_image,_,_ = image_darkaug(current_image,np.array([1]),2,brightness)
+            current_image = current_image[np.newaxis,...]
+            past_image = np.concatenate([past_image,current_image],axis=0)
+    return past_image

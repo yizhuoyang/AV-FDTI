@@ -3,11 +3,6 @@ import torch.nn.functional as F
 import torchvision.models as models
 from torchvision.models import ResNet50_Weights
 
-
-from random import *
-import torch
-from torchsummary import summary
-
 class VisualNet(nn.Module):
     def __init__(self, feature_dim=512):
         super(VisualNet, self).__init__()
@@ -22,12 +17,9 @@ class VisualNet(nn.Module):
 
     def forward(self, y):
         [b, c, row, col] = y.size()
-
-        # VisualNet
         y = self.resnet_feature(y)
         y = F.relu(self.convres(y))
         y = F.relu(self.convvis(y))
         fi = y.contiguous().view(b,-1)
         fi = F.relu(self.fcvis(fi))
-        # fi = fi.view(b, 1, self.feature_dim)
         return fi

@@ -7,28 +7,26 @@ import torch
 from torchsummary import summary
 
 class DetectNet(nn.Module):
-    def __init__(self, feature_dim=512, num_class=5,conv2d=0,kerel_num=16):
+    def __init__(self, feature_dim=512, num_class=6,kernel_num=16):
         super(DetectNet, self).__init__()
         self.feature_dim = feature_dim
         self.num_class   = num_class
-        self.conv2d      = conv2d
 
         self.fc_all = nn.Linear(self.feature_dim, 256)
         self.fc2 = nn.Linear(feature_dim, 256)
         self.fc3 = nn.Linear(256, 100)
         self.fc4 = nn.Linear(100, 1)
 
-        self.deconv1 = nn.ConvTranspose2d(kerel_num, kerel_num, 3, stride=2, padding=1, output_padding=1)
-        self.deconv2 = nn.ConvTranspose2d(kerel_num, kerel_num, 3, stride=2, padding=1, output_padding=1)
-        self.deconv3 = nn.ConvTranspose2d(kerel_num, kerel_num, 3, stride=2, padding=1, output_padding=1)
-        self.deconv4 = nn.ConvTranspose2d(kerel_num, kerel_num, 3, stride=2, padding=1, output_padding=1)
-        self.deconv0 = nn.ConvTranspose2d(1, kerel_num, 3, stride=2, padding=1, output_padding=1)
+        self.deconv1 = nn.ConvTranspose2d(kernel_num, kernel_num, 3, stride=2, padding=1, output_padding=1)
+        self.deconv2 = nn.ConvTranspose2d(kernel_num, kernel_num, 3, stride=2, padding=1, output_padding=1)
+        self.deconv3 = nn.ConvTranspose2d(kernel_num, kernel_num, 3, stride=2, padding=1, output_padding=1)
+        self.deconv4 = nn.ConvTranspose2d(kernel_num, kernel_num, 3, stride=2, padding=1, output_padding=1)
+        self.deconv0 = nn.ConvTranspose2d(1, kernel_num, 3, stride=2, padding=1, output_padding=1)
 
-        self.conv2 = nn.Conv2d(kerel_num, kerel_num, (3, 3), padding=1)
-        self.conv3 = nn.Conv2d(kerel_num, kerel_num, (3, 3), padding=1)
-        self.conv4 = nn.Conv2d(kerel_num, kerel_num, (3, 3), padding=1)
-        self.final_conv = nn.Conv2d(kerel_num, 1, (3, 3), padding=1)
-        # self.offset2 = nn.Linear(1024, 256)
+        self.conv2 = nn.Conv2d(kernel_num, kernel_num, (3, 3), padding=1)
+        self.conv3 = nn.Conv2d(kernel_num, kernel_num, (3, 3), padding=1)
+        self.conv4 = nn.Conv2d(kernel_num, kernel_num, (3, 3), padding=1)
+        self.final_conv = nn.Conv2d(kernel_num, 1, (3, 3), padding=1)
 
         self.offset3 = nn.Linear(self.feature_dim, 100)
         self.offset4 = nn.Linear(100, 2)
