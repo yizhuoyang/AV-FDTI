@@ -1,7 +1,5 @@
 import os
-import librosa
 import torch
-from scipy import signal
 import numpy as np
 import torchaudio.transforms as T
 import torchvision.transforms as trans
@@ -24,16 +22,6 @@ def normalization_processing_torch_all(data):
         data[i,:] = normalization_processing_torch(data[i,:])
     return data
 
-def save_bandpass_audio(input_path, lowcut, highcut, sr=None):
-    # Load the audio file
-    y, sr = librosa.load(input_path, sr=sr)
-    nyquist = 0.5 * sr
-    low = lowcut / nyquist
-    high = highcut / nyquist
-    sos = signal.butter(N=4, Wn=[low, high], btype='band', output='sos')
-    filtered_audio = signal.sosfilt(sos, y)
-
-    return filtered_audio
 
 
 def Audio2Spectrogram(np_data,sr,num_audio=6,normarlization=1,min_frequency=8000,max_frequency=10000):

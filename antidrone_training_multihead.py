@@ -6,12 +6,12 @@ from dataloader.Antidrone_dataloader_hm import AntidroneLoader
 from nets.AVFDTI import AVFDTI
 from utils.loss import _neg_loss
 from utils.train_val import train_and_validate
-from config.config import CONFIG
+from config.train_config import CONFIG
 
 def main():
 
     config = CONFIG
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 
     with open(config["annotation_lines_train"], "r") as f:
         train_lines = f.readlines()

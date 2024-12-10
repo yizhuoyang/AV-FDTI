@@ -16,7 +16,7 @@ def imgBrightness(img1, c, b):
 def image_darkaug(img,img_label,dark_aug,brightness=1):
     if dark_aug==1:
         creterion = random.random()
-        if creterion>0.5:
+        if creterion>0.7:
             brightness = 0
             img = imgBrightness(img,brightness,3)
             img_label = np.array([0])
