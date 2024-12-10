@@ -6,7 +6,7 @@ from nets.visual_net import VisualNet
 from nets.comparison.detection_heads import DetectNet
 from torchinfo import summary
 """
-This network is the replementation of the paper: DroneChase: AV-PedAware: Self-Supervised Audio-Visual Fusion for Dynamic Pedestrian Awareness
+This network is the replementation of the paper: AV-PedAware: Self-Supervised Audio-Visual Fusion for Dynamic Pedestrian Awareness
 """
 
 class AVPed(nn.Module):
