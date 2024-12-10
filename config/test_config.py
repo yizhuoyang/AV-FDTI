@@ -13,7 +13,7 @@ CONFIG = {
     "checkpoint_path": 'output/best_epoch.pth',
     "base_dir": base_dir,
     "annotation_lines_train": os.path.join(data_dir, 'anotation_split_50/train.txt'),
-    "annotation_lines_val": os.path.join(data_dir, 'anotation_split_50/train.txt'),
+    "annotation_lines_val": os.path.join(data_dir, 'anotation_split_50/val.txt'),
     "audio_path": os.path.join(data_dir, 'np_data_align'),
     "image_path": os.path.join(data_dir, 'image'),
     "detect_path": os.path.join(data_dir, 'Detection_new'),
