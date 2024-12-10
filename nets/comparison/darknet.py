@@ -4,7 +4,7 @@
 import torch
 import torch.nn as nn
 from torch.nn import MaxPool2d, functional as F
-
+from torchinfo import summary
 
 __all__ = ['darknet53']
 
@@ -175,3 +175,24 @@ class DarkNet53(nn.Module):
 def darknet53(num_classes=6, init_weight=True):
     return DarkNet53(ResidualBlock, num_classes=num_classes, init_weight=init_weight)
 
+
+if __name__ == "__main__":
+
+    model = darknet53(num_classes=6)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
+    input_shape = (1, 3, 256,256)
+    print("DarkNet53 Model Summary:")
+    model_summary = summary(
+        model,
+        input_size=input_shape,
+        col_names=["input_size", "output_size", "num_params"],
+        depth=3,
+    )
+    dummy_input = torch.randn(*input_shape).to(device)  # Create a dummy input
+    position, cls = model(dummy_input)  # Perform a forward pass
+
+    print("\nForward Pass Results:")
+    print("Position Output Shape:", position.shape)  # Expected: (batch_size, 3)
+    print("Class Output Shape:", cls.shape)  # Expected: (batch_size, num_classes)

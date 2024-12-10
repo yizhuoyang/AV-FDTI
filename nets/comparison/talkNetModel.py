@@ -5,14 +5,14 @@ from  nets.comparison.talknet.visualEncoder     import visualFrontend, visualTCN
 from  nets.comparison.talknet.attentionLayer    import attentionLayer
 import torch.nn.functional as F
 from nets.comparison.detection_heads import DetectNet
-
+from torchinfo import summary
 """
 This script utilizes the network in paper: Is Someone Speaking? Exploring Long-term Temporal Features for Audio-visual Active Speaker Detection. 
 Reference: https://github.com/TaoRuijie/TalkNet-ASD
 """
 
 class talkNetModel(nn.Module):
-    def __init__(self):
+    def __init__(self,classes=6):
         super(talkNetModel, self).__init__()
         # Visual Temporal Encoder
         self.visualFrontend  = visualFrontend()
@@ -25,7 +25,7 @@ class talkNetModel(nn.Module):
         self.crossV2A = attentionLayer(d_model = 128, nhead = 8)
         self.selfAV = attentionLayer(d_model = 256, nhead = 8)
         self.fc   = nn.Linear(768,100)
-        self.fc_c = nn.Linear(100,6)
+        self.fc_c = nn.Linear(100,classes)
         self.fc_p = nn.Linear(100,3)
 
     def forward_visual_frontend(self, x):
@@ -66,7 +66,9 @@ class talkNetModel(nn.Module):
     def forward(self,x,y):
         b,c,h,w = x.size()
         audioEmbed = self.forward_audio_frontend(x) # feedForward
+        print(audioEmbed.shape)
         visualEmbed = self.forward_visual_frontend(y)
+        print(visualEmbed.shape)
         audioEmbed, visualEmbed = self.forward_cross_attention(audioEmbed, visualEmbed)
 
         outsAV= self.forward_audio_visual_backend(audioEmbed, visualEmbed)
@@ -76,4 +78,29 @@ class talkNetModel(nn.Module):
         return position,cls
 
 
+if __name__ == "__main__":
+    model = talkNetModel(classes=6)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
+    batch_size = 1
+    input_shape_audio = (batch_size, 4, 13, 13)
+    input_shape_visual = (batch_size, 3, 112, 112)
+
+    # Summarize the model using torchinfo
+    print("talkNetModel Summary:")
+    model_summary = summary(
+        model,
+        input_data=(torch.randn(*input_shape_audio).to(device), torch.randn(*input_shape_visual).to(device)),
+        col_names=["input_size", "output_size", "num_params"],
+        depth=3,
+    )
+
+    dummy_audio = torch.randn(*input_shape_audio).to(device)
+    dummy_visual = torch.randn(*input_shape_visual).to(device)
+    position, cls = model(dummy_audio, dummy_visual)
+
+    print("\nForward Pass Results:")
+    print("Position Output Shape:", position.shape)  # Expected: (batch_size, 3)
+    print("Class Output Shape:", cls.shape)  # Expected: (batch_size, num_classes)
 

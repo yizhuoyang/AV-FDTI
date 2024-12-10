@@ -4,11 +4,11 @@ import torch
 
 
 class AudioNet(nn.Module):
-    def __init__(self, dropout_rate=0.3, kerel_num=16, feature_dim=512):
+    def __init__(self, dropout_rate=0.3, kernel_num=16, feature_dim=512):
         super(AudioNet, self).__init__()
         self.dropout_rate = dropout_rate
         self.feature_dim = feature_dim
-        self.kernel_num  = kerel_num
+        self.kernel_num  = kernel_num
 
         self.convt1 = nn.Conv2d(4, self.kernel_num, (3, 64))
         self.convt2 = nn.Conv2d(4, self.kernel_num, (5, 64))

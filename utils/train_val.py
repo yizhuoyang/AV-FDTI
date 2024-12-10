@@ -19,7 +19,7 @@ def train_one_epoch(model, train_dataloader, optimizer, device, cross_entropy_lo
             loss_z = reg_loss(z * mask_z, height * mask_z)
             loss_heatmap = neg_loss(h * mask_heat, heatmap * mask_heat)
             loss_off = reg_loss(o * mask_off, diff * mask_off)
-            loss = loss_heatmap + loss_z + loss_off * 0.5 + loss_detect * 0.3 + loss_traj * 0.3 + loss_cls * 0.3
+            loss = loss_heatmap + loss_z + loss_off * 0.1 + loss_detect * 0.1 + loss_traj * 0.1 + loss_cls * 0.1
             total_loss += loss.item()
             loss.backward()
             optimizer.step()
@@ -45,7 +45,7 @@ def validate_one_epoch(model, val_dataloader, device, cross_entropy_loss, reg_lo
             loss_z = reg_loss(z * mask_z, height * mask_z)
             loss_heatmap = neg_loss(h * mask_heat, heatmap * mask_heat)
             loss_off = reg_loss(o * mask_off, diff * mask_off)
-            loss = loss_heatmap + loss_z + loss_off * 0.5 + loss_detect * 0.3 + loss_traj * 0.3 + loss_cls * 0.3
+            loss = loss_heatmap + loss_z + loss_off * 0.1 + loss_detect * 0.1 + loss_traj * 0.1 + loss_cls * 0.1
             total_loss += loss.item()
 
     return total_loss / len(val_dataloader)

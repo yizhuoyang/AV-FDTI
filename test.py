@@ -16,7 +16,7 @@ def main():
 
     gt_class, predict_class, real_positions, predicted_positions, class_right = evaluate_model(model, val_lines, config)
     calculate_metrics(gt_class, predict_class, real_positions, predicted_positions, config)
-    plot_confusion_matrix(gt_class, predict_class, config)
+    # plot_confusion_matrix(gt_class, predict_class, config)
 
 if __name__ == "__main__":
     main()

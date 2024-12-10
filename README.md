@@ -1,7 +1,7 @@
 # <div align="center">AV-FDTI: Audio-visual fusion for drone threat identification</div>
 
 <div align="center">
-    <img src="assests/arcitecture.jpg" alt="banner" width="600"/>
+    <img src="assests/network.png" alt="banner" width="600"/>
 </div>
 
 <div align="center">
@@ -16,6 +16,7 @@
   - `tqdm`
   - `scikit-learn`
   - `seaborn`
+  - `torchsummary`
 
 ## Train
 Go to config/train_config.py to modify the hyperparameters, and then run:

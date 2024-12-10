@@ -1,11 +1,12 @@
 import torch.nn as nn
-
+import torch
+from torchinfo import summary
 """
 This network is the replementation of the paper: DroneChase: A Mobile and Automated Cross-Modality System for Continuous Drone Tracking
 """
 
 class voranet(nn.Module):
-    def __init__(self):
+    def __init__(self,classes=6):
         super(voranet, self).__init__()
         # Block1
         self.conv1 = nn.Conv2d(4, 64, kernel_size=3, stride=2, padding=1)
@@ -27,7 +28,7 @@ class voranet(nn.Module):
         # Dense
         self.fc1 = nn.Linear(128, 32)
         self.relu4 = nn.ReLU()
-        self.fc3 = nn.Linear(32, 6)
+        self.fc3 = nn.Linear(32, classes)
         self.fc2 = nn.Linear(32, 3)
 
     def forward(self, x):
@@ -46,4 +47,29 @@ class voranet(nn.Module):
 
         return x,c
 
+if __name__ == "__main__":
 
+    model = voranet()
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+    # Define input size
+    batch_size = 2
+    input_shape = (batch_size, 4, 224,224)  # Example input: (batch_size, channels, height, width)
+    #
+    # # Summarize the model using torchinfo
+    print("voranet Model Summary:")
+    model_summary = summary(
+        model,
+        input_size=(1,4, 224,224),  # Exclude batch size
+        col_names=["input_size", "output_size", "num_params"],
+        depth=3,
+    )
+
+    # Generate a sample to show the output shapes
+    dummy_input = torch.randn(*input_shape).to(device)
+    output_position, output_classification = model(dummy_input)
+
+    # Print the output shapes
+    print("\nForward Pass Results:")
+    print("Position Output Shape:", output_position.shape)  # Expected: (batch_size, 3)
+    print("Classification Output Shape:", output_classification.shape)  # Expected: (batch_size, 6)
