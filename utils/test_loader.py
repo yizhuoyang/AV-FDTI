@@ -105,17 +105,15 @@ def evaluate_model(model, val_lines, config):
             class_detection = c.cpu().detach().numpy()[0]
             o = o.cpu().detach().numpy()[0]
             z = z.cpu().detach().numpy()[0]
-
             predicted_position = calculate_result(h, o, z)
-            real_positions.append(real_position)
-            predicted_positions.append(predicted_position)
+            if real_class!=np.array([5]):
+                real_positions.append(real_position)
+                predicted_positions.append(predicted_position)
 
             predicted_cls = np.argmax(class_detection)
             predict_class.append(predicted_cls)
-
             if predicted_cls == real_class:
                 class_right += 1
-
             # Update progress bar
             pbar.update(1)
 
